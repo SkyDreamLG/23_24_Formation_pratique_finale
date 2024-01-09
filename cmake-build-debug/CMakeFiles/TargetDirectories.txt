@@ -1,3 +1,0 @@
-C:/Users/liugu/CLionProjects/23-24-Formation-pratique-finale/cmake-build-debug/CMakeFiles/23_24_Formation_pratique_finale.dir
-C:/Users/liugu/CLionProjects/23-24-Formation-pratique-finale/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/liugu/CLionProjects/23-24-Formation-pratique-finale/cmake-build-debug/CMakeFiles/rebuild_cache.dir
