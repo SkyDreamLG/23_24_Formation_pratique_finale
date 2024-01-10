@@ -93,10 +93,17 @@ void registerUser() {
     char ch;
     while (1) {
         ch = getch();
-        if (ch == 13) // 如果输入回车，则结束输入密码
+        if (ch == 13) // 输入回车结束输入密码
             break;
-        new_user.password[i++] = ch;
-        printf("*"); // 输出星号来代替密码显示在屏幕上
+        if (ch == 8) { // 处理退格
+            if (i > 0) {
+                printf("\b \b"); // 退格删除一个字符的显示
+                i--;
+            }
+        } else {
+            new_user.password[i++] = ch;
+            printf("*"); // 输出星号代替密码显示在屏幕上
+        }
     }
     new_user.password[i] = '\0'; // 在密码字符串末尾添加结束符
 
@@ -123,10 +130,17 @@ int loginUser() {
     char ch;
     while (1) {
         ch = getch();
-        if (ch == 13) // 如果输入回车，则结束输入密码
+        if (ch == 13) // 输入回车结束输入密码
             break;
-        password[i++] = ch;
-        printf("*"); // 输出星号来代替密码显示在屏幕上
+        if (ch == 8) { // 处理退格
+            if (i > 0) {
+                printf("\b \b"); // 退格删除一个字符的显示
+                i--;
+            }
+        } else {
+            password[i++] = ch;
+            printf("*"); // 输出星号代替密码显示在屏幕上
+        }
     }
     password[i] = '\0'; // 在密码字符串末尾添加结束符
 
