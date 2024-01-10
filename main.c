@@ -21,6 +21,16 @@ struct Student {
 struct Student students[MAX_STUDENTS];
 int total_students = 0;
 
+int findstudent(int student_id) {
+    int i;
+    for (i = 0; i < total_students; i++) {
+        if (students[i].student_id == student_id) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void saveStudentsToFile() {
     FILE *file = fopen(FILENAME, "w");
     if (file == NULL) {
@@ -70,6 +80,12 @@ void addStudent() {
 
     printf("请输入学生学号：");
     scanf("%d", &new_student.student_id);
+
+    if (findstudent(new_student.student_id)) {
+        printf("学生信息已存在");
+        return;
+    }
+
     printf("请输入学生姓名：");
     scanf("%s", new_student.name);
     printf("请输入学生班级：");
