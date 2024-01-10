@@ -1,10 +1,150 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
+#include <conio.h>
 
 #define MAX_STUDENTS 100
 #define MAX_NAME_LENGTH 50
 #define FILENAME "students.txt"
+#define MAX_USERS 1
+#define USER_FILENAME "user.txt"
+#define MAX_USERNAME_LENGTH 50
+#define MAX_PASSWORD_LENGTH 50
+#define XOR_KEY 0x7 // 异或加密密钥
+void registerUser();
+
+// 用户结构体
+struct User {
+    char username[MAX_USERNAME_LENGTH];
+    char password[MAX_PASSWORD_LENGTH];
+};
+
+struct User users[MAX_USERS];
+int total_users = 0;
+
+// 加载用户信息
+void loadUsersFromFile() {
+    FILE *file = fopen(USER_FILENAME, "r");
+    if (file == NULL) {
+        printf("无法加载用户信息文件。\n");
+        registerUser();
+        return;
+    }
+
+    while (!feof(file) && total_users < MAX_USERS) {
+        fscanf(file, "%s %s\n", users[total_users].username, users[total_users].password);
+        total_users++;
+    }
+
+    fclose(file);
+    printf("用户信息已加载。\n");
+}
+
+// 保存用户信息
+void saveUsersToFile() {
+    FILE *file = fopen(USER_FILENAME, "w");
+    if (file == NULL) {
+        printf("无法保存用户信息到文件。\n");
+        return;
+    }
+
+    for (int i = 0; i < total_users; i++) {
+        fprintf(file, "%s %s\n", users[i].username, users[i].password);
+    }
+
+    fclose(file);
+    printf("用户信息已保存到文件。\n");
+}
+
+// 简单的异或加密函数
+void simpleEncrypt(char *str) {
+    char *ptr = str;
+    while (*ptr != '\0') {
+        *ptr = *ptr ^ XOR_KEY;
+        ptr++;
+    }
+}
+
+// 简单的异或解密函数
+void simpleDecrypt(char *str) {
+    char *ptr = str;
+    while (*ptr != '\0') {
+        *ptr = *ptr ^ XOR_KEY;
+        ptr++;
+    }
+}
+
+// 注册功能
+void registerUser() {
+    printf("\n====== 注册 ======\n");
+    if (total_users >= MAX_USERS) {
+        printf("用户数量已达上限，无法注册新用户。\n");
+        return;
+    }
+
+    struct User new_user;
+
+    printf("请输入用户名：");
+    scanf("%s", new_user.username);
+
+    printf("请输入密码：");
+    int i = 0;
+    char ch;
+    while (1) {
+        ch = getch();
+        if (ch == 13) // 如果输入回车，则结束输入密码
+            break;
+        new_user.password[i++] = ch;
+        printf("*"); // 输出星号来代替密码显示在屏幕上
+    }
+    new_user.password[i] = '\0'; // 在密码字符串末尾添加结束符
+
+    simpleEncrypt(new_user.password); // 对密码进行加密
+
+    users[total_users++] = new_user;
+    printf("\n");
+    saveUsersToFile();
+    printf("\n注册成功，程序将会在3秒后跳转到登录页\n");
+    sleep(3); // 等待3秒
+    system("cls");
+}
+
+// 登录功能
+int loginUser() {
+    char username[MAX_USERNAME_LENGTH];
+    char password[MAX_PASSWORD_LENGTH];
+
+    printf("请输入用户名：");
+    scanf("%s", username);
+
+    printf("请输入密码：");
+    int i = 0;
+    char ch;
+    while (1) {
+        ch = getch();
+        if (ch == 13) // 如果输入回车，则结束输入密码
+            break;
+        password[i++] = ch;
+        printf("*"); // 输出星号来代替密码显示在屏幕上
+    }
+    password[i] = '\0'; // 在密码字符串末尾添加结束符
+
+    simpleEncrypt(password); // 对输入的密码进行加密
+
+    for (int i = 0; i < total_users; i++) {
+        if (strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0) {
+            simpleDecrypt(users[i].password); // 如果登录成功，解密密码以便后续操作
+            printf("\n登录成功，程序将在3秒后跳转到菜单\n");
+            sleep(3); // 等待3秒
+            system("cls");
+            return 1; // 登录成功
+        }
+    }
+
+    printf("\n用户名或密码错误。\n");
+    return 0; // 登录失败
+}
 
 //建立学生数据结构体
 struct Student {
@@ -189,6 +329,23 @@ void displayGraduates() {
 
 int main() {
 
+    loadUsersFromFile(); // 加载用户信息文件
+
+    int login_attempts = 0;
+    int logged_in = 0;
+
+    while (login_attempts < 3 && !logged_in) {
+        printf("\n====== 登录 ======\n");
+        logged_in = loginUser();
+        login_attempts++;
+    }
+
+    if (!logged_in) {
+        printf("登录尝试次数过多，程序将在5秒后退出。\n");
+        sleep(5);
+        return 0;
+    }
+
     loadStudentsFromFile();    //加载学生信息文件
 
     int choice;
@@ -259,6 +416,4 @@ int main() {
                 printf("请输入有效的选项。\n");
         }
     }
-
-    return 0;
 }
