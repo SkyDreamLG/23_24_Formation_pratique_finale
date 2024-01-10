@@ -6,6 +6,7 @@
 #define MAX_NAME_LENGTH 50
 #define FILENAME "students.txt"
 
+//建立学生数据结构体
 struct Student {
     int student_id;
     char name[MAX_NAME_LENGTH];
@@ -21,6 +22,7 @@ struct Student {
 struct Student students[MAX_STUDENTS];
 int total_students = 0;
 
+//定义学生数据查找相关功能函数
 int findstudent(int student_id) {
     int i;
     for (i = 0; i < total_students; i++) {
@@ -31,6 +33,7 @@ int findstudent(int student_id) {
     return 0;
 }
 
+//定义文件保存功能函数
 void saveStudentsToFile() {
     FILE *file = fopen(FILENAME, "w");
     if (file == NULL) {
@@ -49,6 +52,7 @@ void saveStudentsToFile() {
     printf("学生信息已保存到文件。\n");
 }
 
+//定义学生数据读取相关函数
 void loadStudentsFromFile() {
     FILE *file = fopen(FILENAME, "r");
     if (file == NULL) {
@@ -70,6 +74,7 @@ void loadStudentsFromFile() {
     printf("学生信息已加载。\n");
 }
 
+//定义学生数据添加相关函数
 void addStudent() {
     if (total_students >= MAX_STUDENTS) {
         printf("学生信息已满，无法添加。\n");
@@ -103,6 +108,7 @@ void addStudent() {
     printf("学生信息已添加。\n");
 }
 
+//定义学生学分显示功能相关函数
 void displayStudentCredits(int student_id) {
     int i;
     for (i = 0; i < total_students; i++) {
@@ -122,6 +128,7 @@ void displayStudentCredits(int student_id) {
     printf("未找到该学生。\n");
 }
 
+//定义学生学分修改相关功能函数
 void modifyStudentCredits(int student_id) {
     int i;
     for (i = 0; i < total_students; i++) {
@@ -143,6 +150,7 @@ void modifyStudentCredits(int student_id) {
     printf("未找到该学生。\n");
 }
 
+//定义学生数据删除功能相关函数
 void deleteStudent(int student_id) {
     int i, found = 0;
     for (i = 0; i < total_students; i++) {
@@ -161,6 +169,7 @@ void deleteStudent(int student_id) {
     }
 }
 
+//定义可毕业学生查找功能相关函数
 void displayGraduates() {
     printf("已完成学分可以毕业的学生：\n");
     for (int i = 0; i < total_students; i++) {
@@ -179,9 +188,11 @@ void displayGraduates() {
 }
 
 int main() {
-    loadStudentsFromFile();
+
+    loadStudentsFromFile();    //加载学生信息文件
 
     int choice;
+
     while (1) {
         printf("\n====== 学分管理系统菜单 ======\n");
         printf("1. 添加学生\n");
@@ -196,6 +207,7 @@ int main() {
         scanf("%d", &choice);
         system("cls");
 
+        //输出目录并等待用户选择功能
         switch (choice) {
             case 1:
                 printf("\n====== 添加学生 ======\n");
